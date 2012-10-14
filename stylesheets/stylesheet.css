@@ -152,8 +152,8 @@ pre, code {
   color: #222;
   background-color: #fff;
 
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
-  font-size: 14px;
+  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, Consolas, monospace;
+  font-size: 10px;
 
   border-radius: 2px;
   -moz-border-radius: 2px;
