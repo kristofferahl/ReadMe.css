@@ -10,11 +10,20 @@ Because sometimes you find yourself having to read throught an html document tha
 
 ## How
 
+### Option 1
+
+1. Remove any references to other style sheets in the document
+2. Add this one line to the head section of your document
+
+```<link type="text/css" rel="stylesheet" href="http://kristofferahl.github.com/ReadMe.css/readme.css">```
+
+### Option 2
+
 1. Download readme.css
 2. Remove any references to other style sheets in the document
 3. Add this one line to the head section of your document
 
-```<link type="text/css" rel="stylesheet" media="screen" href="readme.css">```
+```<link type="text/css" rel="stylesheet" href="readme.css">```
 	
 ## Contributing
 
