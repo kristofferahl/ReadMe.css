@@ -2,6 +2,8 @@
 
 This project aims to provide a solid stylesheet suitable for reading in a web browser.
 
+[View sample page here](http://kristofferahl.github.com/ReadMe.css/samples/sample-1.html)
+
 ## Why
 
 Because sometimes you find yourself having to read throught an html document that isn't optimized for reading.
