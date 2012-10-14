@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<head>
+	<title>Tab authoring in Glimpse CTP1 - Introduction - Part 1</title>
+	<link type="text/css" rel="stylesheet" media="screen" href="http://kristofferahl.github.com/ReadMe.css/readme.css">
+</head>
+<body>
+<section>
+<article>
+
+<h1>Tab authoring in Glimpse CTP1 - Introduction - Part 1</h1>
+<p><strong>Source <a href="http://kristofferahl.tumblr.com/post/31996623630/tab-authoring-in-glimpse-1-part2">http://kristofferahl.tumblr.com/post/31996623630/tab-authoring-in-glimpse-1-part2</a></strong></p>						
+<p><strong>A while back I started working on a <a href="http://getglimpse.com/">Glimpse</a> plugin for <a href="http://fluentsecurity.net/">FluentSecurity</a>.</strong> Back then Glimpse was still in beta (0.86) and while the team had done an awesome job enabling us to write custom plugins, I found it hard to keep track of all the object arrays. It was also quite hard to test the plugin, which was something I felt I needed to do to get things right.</p>
+
+<p>Being a big fan of fluent api’s <strong>I set out to create a set of fluent helpers for tab authoring</strong>. Recently Glimpse CTP1 was released and they were kind enough to accept my pull request for the fluent helpers I had created. <strong>In this post I’ll describe how you can leverage them to help you create your own plugin/tab for Glimpse.</strong></p>
+
+<p>I know you’re already saying “<strong>show me the codez</strong>” so here’s a sample plugin using the new helpers:</p>
+
+<pre><code>public class Modules : AspNetTab
+{
+    public override object GetData(ITabContext context)
+    {
+        var plugin = Plugin.Create("Order", "Name", "Type");
+        var count = 0;
+
+        var requestContext = context.GetRequestContext&lt;HttpContextBase&gt;();
+        foreach (var moduleKey in requestContext.ApplicationInstance.Modules.AllKeys)
+        {
+            var httpModule = requestContext.ApplicationInstance.Modules[moduleKey];
+
+            plugin.AddRow()
+                .Column(count++)
+                .Column(moduleKey).Strong()
+                .Column(httpModule.GetType().FullName)
+                .SelectedIf(moduleKey == "Glimpse");
+        }
+
+        return plugin;
+    }
+
+    public override string Name
+    {
+        get { return "Modules"; }
+    }
+}
+</code></pre>
+
+<p>I’ll do my best at explaing what’s going on here. But first, here’s the output created by Glimpse.</p>
+
+<p><img src="http://25.media.tumblr.com/tumblr_maprozSWo81rvmtnbo1_1280.png" alt="Glimpse Modules tab result"></p>
+
+<p>As you can see we have managed to list all the modules loaded in the application. Now let’s look at things in more detail.</p>
+
+<h2>Step by step</h2>
+
+<p>First we create a tab passing in the headers we want for each column.</p>
+
+<pre><code>var plugin = Plugin.Create("Order", "Name", "Type");
+</code></pre>
+
+<p>This will return a <strong>TabSection</strong> which is the root of our tab/plugin. A TabSection can be seen as simple table that contains rows (<strong>TabRow</strong>) and columns (<strong>TabColumn</strong>). Next we get all the module keys and start itterating.</p>
+
+<p>For each key we add a row to the TabSection by calling <strong><code>plugin.AddRow()</code></strong>.</p>
+
+<p>Next we need to add some data to the row and we do this using method chaining.</p>
+
+<pre><code>plugin.AddRow().Column("Some value goes here. Any object will do!");
+</code></pre>
+
+<p>In the case of the Modules tab we have 3 headers so we need to add 3 columns.</p>
+
+<pre><code>plugin.AddRow()
+    .Column(count++)
+    .Column(moduleKey)
+    .Column(httpModule.GetType().FullName);
+</code></pre>
+
+<p>In the first column we want to display the order of the module. In the second column we display the key (name of the module). Lastly we display the full type name of the module. Simple enough.</p>
+
+<h3>Column styles</h3>
+
+<p><strong>Next we want to use the built in support for styling our data.</strong> Again we use method chaining to do this. After each call to .Column() we can choose to format that column in various ways. <em>Glimpse currently supports Strong, Emphasis, Underline along with a few other useful styling options.</em></p>
+
+<p>In our example we want to make the “Name” column stand out so we use <strong><code>.Column(moduleKey).Strong()</code></strong> to do this.</p>
+
+<h3>Row styles</h3>
+
+<p>As if this wasn’t enough <strong>there is also support for “row”-styles</strong>. I decided we should highlight the Glimpse module so it will be easier to see if it was loaded by our application. This is done by chaining <strong><code>.SelectedIf(moduleKey == "Glimpse")</code></strong> on to the last column. <strong>These types of “row”-styles must be applied last.</strong> There’s support for Warn, Error, Quiet and a few more.</p>
+
+<p>After we are done itterating over each module we simply return the plugin (TabSection). That’s it, we now have a working Glimpse tab/plugin!</p>
+
+<h2>What’s next</h2>
+
+<p><strong>I’ll go in to more details in upcoming blog posts on the fluent api for Tab authoring but for now this will have to do.</strong></p>
+
+<p><em>Please leave any feedback you have on the fluent api in the <a href="https://groups.google.com/forum/?fromgroups#!forum/getglimpse-dev">Glimpse google group</a>.</em></p>
+
+<p>Enjoy!</p>
+
+<h2>Posts in this series</h2>
+
+<ul><li><a href="http://kristofferahl.tumblr.com/post/31937158341/tab-authoring-in-glimpse-1-part1">Tab authoring in Glimpse CTP1 - Introduction - Part 1</a></li>
+<li><a href="http://kristofferahl.tumblr.com/post/31996623630/tab-authoring-in-glimpse-1-part2">Tab authoring in Glimpse CTP1 - Sections, Rows and Columns - Part 2</a></li>
+<li><a href="http://kristofferahl.tumblr.com/post/32042641565/tab-authoring-in-glimpse-1-part3">Tab authoring in Glimpse CTP1 - Styling rows and columns - Part 3</a></li>
+</ul>
+
+</article>
+</section>
+</body>
+</html>
